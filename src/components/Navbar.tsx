@@ -29,12 +29,10 @@ export default function Navbar() {
   return (
     <nav
       ref={navRef}
-      className="w-full z-50 bg-black text-white px-8 py-4 shadow-lg"
+      className="w-full z-50 bg-black text-white mt-0 px-8 py-4 shadow-lg"
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <h1 className={`${poetsen.className} text-3xl font-bold text-center mb-8`}>HimitCo</h1>
-
-        <ul className="hidden md:flex space-x-10 text-lg">
+      <div className="max-w-5xl mx-auto bg-black-900 rounded-2xl flex justify-center items-center relative">
+        <ul className="hidden md:flex space-x-10 items-center text-lg">
           {navItems.map((item, index) => (
             <li
               key={index}
@@ -42,7 +40,7 @@ export default function Navbar() {
             >
               <Link
                 href={`/${item.toLowerCase()}`}
-                className="group-hover:text-cyan-400 group-hover:brightness-125 group-hover:scale-105 transition-all duration-300"
+                className="flex items-center group-hover:text-cyan-400 group-hover:brightness-125 group-hover:scale-105 transition-all duration-300"
               >
                 {item}
               </Link>
@@ -51,9 +49,11 @@ export default function Navbar() {
           ))}
         </ul>
 
+        
+
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden flex flex-col gap-1"
+          className="md:hidden flex flex-col gap-1 absolute right-0"
           onClick={() => setIsOpen(!isOpen)}
         >
           <div className="w-6 h-0.5 bg-white"></div>
@@ -61,7 +61,9 @@ export default function Navbar() {
           <div className="w-6 h-0.5 bg-white"></div>
         </button>
       </div>
-
+      {/* <div className='flex justify-center items-center mt-10'>
+      <h1 className={`${poetsen.className} text-6xl font-bold text-center mb-0`}>HimitCo</h1>
+      </div> */}
       {/* Mobile Dropdown */}
       {isOpen && (
         <ul className="md:hidden mt-4 flex flex-col space-y-4 text-center bg-black rounded-lg p-4">

@@ -10,7 +10,7 @@ const poetsen = Poetsen_One({
 export default function Home(){
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="container mx-auto py-8 ">
+      <div className="container mx-auto  ">
         <Navbar />
         <Hero />
         <MainHero />

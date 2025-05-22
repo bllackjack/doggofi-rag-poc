@@ -29,12 +29,12 @@ export default function Hero() {
         { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
         '-=0.7'
       )
-      .fromTo(
-        buttonRef.current,
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.7)' },
-        '-=0.5'
-      );
+    //   .fromTo(
+    //     buttonRef.current,
+    //     { scale: 0.8, opacity: 0 },
+    //     { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.7)' },
+    //     '-=0.5'
+    //   );
   }, []);
 
   return (
@@ -44,9 +44,9 @@ export default function Hero() {
     >
       <h1
         ref={headingRef}
-        className="text-4xl md:text-6xl font-extrabold text-cyan-400 tracking-tight"
+        className="text-8xl md:text-7xl font-extrabold text-cyan-400 tracking-tight"
       >
-        Build Web Magic with HimitCo
+        HimitCo
       </h1>
       <p
         ref={subheadingRef}
@@ -54,12 +54,12 @@ export default function Hero() {
       >
         We craft elegant, high-performance websites and web apps that captivate and convert.
       </p>
-      <button
+      {/* <button
         ref={buttonRef}
         className="mt-8 px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-lg rounded-full transition duration-300"
       >
         Explore Our Work
-      </button>
+      </button> */}
     </section>
   );
 }
