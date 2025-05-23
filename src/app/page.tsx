@@ -1,21 +1,42 @@
+'use client';
+
+import { Suspense } from 'react';
 import Chat from '@/components/Chat';
-import Navbar from '@/components/Navbar';
-import { Poetsen_One } from 'next/font/google';
 import Hero from '@/components/Hero';
 import MainHero from '@/components/MainHero';
-const poetsen = Poetsen_One({
+import Footer from '@/components/Footer';
+import SmoothScrollWrapper from '@/components/SmoothScrollWrapper';
+import { Montserrat } from 'next/font/google';
+
+const montserrat = Montserrat({
   subsets: ['latin'],
-  weight: '400', // Poetsen One has only one weight
+  weight: ['400', '700'],
 });
-export default function Home(){
+
+function ErrorFallback({ error }: { error: Error }) {
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="container mx-auto  ">
-        <Navbar />
-        <Hero />
-        <MainHero />
-       <Chat />
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-4">
+      <div className="text-center">
+        <h2 className={`${montserrat.className} text-2xl font-bold mb-4`}>Something went wrong</h2>
+        <p className="text-gray-400">{error.message}</p>
       </div>
-    </main>
+    </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <SmoothScrollWrapper>
+      <main className={`min-h-screen bg-black text-white overflow-hidden ${montserrat.className}`}>
+        <div className="container mx-auto">
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <Hero />
+            <MainHero />
+            <Chat />
+            <Footer />
+          </Suspense>
+        </div>
+      </main>
+    </SmoothScrollWrapper>
   );
 }
