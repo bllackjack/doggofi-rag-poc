@@ -1,95 +1,68 @@
+// app/api/chat/route.ts
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI, Part } from '@google/generative-ai';
 
-// Ollama API endpoint - runs locally
-const OLLAMA_API = 'http://localhost:11434/api/generate';
-
+// This is crucial for Vercel Edge deployments for streaming
 export const runtime = 'edge';
+
+interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+// Initialize Gemini with your API key from environment variables
+// Ensure GOOGLE_API_KEY is set in your .env.local file
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages } = await req.json() as { messages: ChatMessage[] };
 
-    // Validate the request
-    if (!messages || !Array.isArray(messages)) {
-      return NextResponse.json(
-        { error: 'Messages are required and must be an array' },
-        { status: 400 }
-      );
+    // Validate API Key presence
+    if (!process.env.GOOGLE_API_KEY) {
+      return new NextResponse('Google API Key not configured.', { status: 500 });
     }
 
-    // Convert messages to prompt format
-    const prompt = messages
-      .map((msg) => `${msg.role === 'user' ? 'Human' : 'Assistant'}: ${msg.content}`)
-      .join('\n') + '\nAssistant: ';
+    // Convert messages for Gemini's chat history format
+    const history = messages.slice(0, -1).map((msg: ChatMessage) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user', // Gemini expects 'model' for assistant
+      parts: [{ text: msg.content }] as Part[],
+    }));
 
-    // Create a streaming response
-    const stream = new ReadableStream({
+    // Get the last message, which is the current user's prompt
+    const latestUserMessage = messages[messages.length - 1].content;
+
+    // Use the 'gemini-pro' model for text-only conversations.
+    // This is the correct and widely available alias.
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+    const chat = model.startChat({ history });
+
+    // Send the latest user message to the model
+    const result = await chat.sendMessageStream(latestUserMessage); // Use sendMessageStream for real-time streaming
+
+    // Create a ReadableStream to send data back to the client
+    const readableStream = new ReadableStream({
       async start(controller) {
-        try {
-          const response = await fetch(OLLAMA_API, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              model: 'llama3',
-              prompt: prompt,
-              stream: true,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`Ollama API error: ${response.statusText}`);
-          }
-
-          const reader = response.body?.getReader();
-          if (!reader) {
-            throw new Error('No response body');
-          }
-
-          const decoder = new TextDecoder();
-          let buffer = '';
-
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || '';
-
-            for (const line of lines) {
-              if (line.trim() === '') continue;
-              try {
-                const data = JSON.parse(line);
-                if (data.response) {
-                  controller.enqueue(new TextEncoder().encode(data.response));
-                }
-                if (data.done) {
-                  controller.close();
-                }
-              } catch (e) {
-                console.error('Error parsing Ollama response:', e);
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Streaming error:', error);
-          controller.error(error);
+        for await (const chunk of result.stream) {
+          controller.enqueue(chunk.text());
         }
+        controller.close();
       },
     });
 
-    return new Response(stream, {
+    return new Response(readableStream, {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache', // Important for streaming
       },
     });
-  } catch (error) {
-    console.error('Error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+
+  } catch (err: any) {
+    console.error('API Route Error:', err);
+    // Provide more specific error details in development mode, but be cautious in production
+    const errorMessage = process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error';
+    const status = err.status || 500;
+    return new NextResponse(errorMessage, { status });
   }
-} 
+}
