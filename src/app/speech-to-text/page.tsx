@@ -56,19 +56,25 @@ export default function SttPage() {
 
       // Check browser support
       if (!SpeechRecognition) {
-        alert('Your browser does not support Speech Recognition!');
+        alert("Your browser does not support Speech Recognition!");
         return;
       }
 
       // Create and configure speech recognition instance
       const recognition = new SpeechRecognition();
-      recognition.continuous = true;        // Keep listening until stopped
-      recognition.interimResults = true;    // Get results as user speaks
-      recognition.lang = 'en-US';          // Set language to US English
+      recognition.continuous = true; // Keep listening until stopped
+      recognition.interimResults = true; // Get results as user speaks
+      recognition.lang = "en-US";
+      recognition.lang = "en-GB"; // English (UK accent)
+      recognition.lang = "en-IN"; // English (Indian accent)
+      recognition.lang = "en-AU"; // English (Australian accent)
+      // recognition.lang = "fr-FR"; // French (France)
+      // recognition.lang = "es-ES"; // Spanish (Spain)
+      // recognition.lang = "es-MX"; // Spanish (Mexico)         
 
       // Handle speech recognition results
       recognition.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = '';
+        let finalTranscript = "";
         // Process all results
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           finalTranscript += event.results[i][0].transcript;
@@ -78,9 +84,9 @@ export default function SttPage() {
 
       // Handle speech recognition errors
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error('Speech recognition error:', event.error);
+        console.error("Speech recognition error:", event.error);
         // Stop listening if no speech is detected
-        if (event.error === 'no-speech') {
+        if (event.error === "no-speech") {
           setListening(false);
         }
       };
