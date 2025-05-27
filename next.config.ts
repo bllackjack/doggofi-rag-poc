@@ -1,7 +1,14 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['localhost:3000', 'localhost:3001'],
+    },
+  },
+  env: {
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+  },
 };
 
 export default nextConfig;
