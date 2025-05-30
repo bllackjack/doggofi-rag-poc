@@ -4,6 +4,7 @@ import { useChatHandler } from "@/hooks/useChatHandler";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import { useEffect, useRef, useState } from "react";
 
+
 export default function VoiceChatPage2() {
   const [spokenMessageIds, setSpokenMessageIds] = useState<Set<string>>(
     new Set()
@@ -17,6 +18,7 @@ export default function VoiceChatPage2() {
 
   const { speak, cancel, speaking, supported } = useSpeechSynthesis();
 
+ 
 
   // interface ChatBoxProps {
   //     initialMessages?: ChatMessage[];
