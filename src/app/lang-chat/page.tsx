@@ -42,12 +42,19 @@ export default function ChatPage() {
   };
 
   useEffect(() => {
-    if (transcript && (listening || !listening && input !== transcript)) {
-      setInput(transcript);
-    }
-    
-  }, [transcript, listening]); 
+    if (!transcript || !listening) return;
+  
+    const debounceTimeout = setTimeout(async () => {
+      stopListening();       // Stop mic
+      if (!speaking) cancel(); // Cancel any ongoing speech
+      await sendMessage(transcript);  // Send message
+      setInput('');          // Clear input
+    }, 2000); // 2 seconds debounce
+  
+    return () => clearTimeout(debounceTimeout); // Clear timeout on next transcript change
+  }, [transcript]);
 
+  
   useEffect(() => {
     if (supported && messages.length > 0) {
       const lastMessage = messages[messages.length - 1]; 
@@ -124,7 +131,9 @@ export default function ChatPage() {
             onClick={toggleListening}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             disabled={isLoading}
+            
           >
+            
              {listening ? "Stop Mic" : "Mic"}
           </button>
           <button
