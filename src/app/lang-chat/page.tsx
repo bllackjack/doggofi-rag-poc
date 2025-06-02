@@ -2,11 +2,13 @@
 
 import React, { useState, FormEvent, useEffect, useRef }
  from 'react';
-import { useChatbot } from  '@/hooks/useChatbot'// Adjust path if needed
-import { useTextToSpeech } from '@/hooks/useTextToSpeech';
+import { useChatbot } from  '@/hooks/useChatbot'
+import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import useSpeechToText from '@/hooks/useSpeechToText';
 
 export default function ChatPage() {
+
+    const lastSpokenMessageId = useRef<number | null>(null);
   const { messages, isLoading, error, sendMessage, resetChat } = useChatbot();
   const {
     transcript,
@@ -15,10 +17,14 @@ export default function ChatPage() {
     stopListening
   } = useSpeechToText();
 
-  const [input, setInput] = useState<string>('');
-  const messagesEndRef = useRef<HTMLDivElement>(null); // To scroll to bottom of chat
+  const { speak,
+    cancel,
+    speaking,
+    supported}=useSpeechSynthesis();
 
-  // Scroll to the latest message whenever messages state changes
+  const [input, setInput] = useState<string>('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -28,20 +34,32 @@ export default function ChatPage() {
     if (listening) {
         stopListening();
       }
+      if(!speaking){
+        cancel();
+      }
     await sendMessage(input);
-    setInput(''); // Clear input after sending
+    setInput(''); 
   };
 
   useEffect(() => {
-    // Only update input state from transcript if currently listening or just stopped
-    // and the transcript has content.
     if (transcript && (listening || !listening && input !== transcript)) {
       setInput(transcript);
     }
-    // You might want to add a debounce here for performance if transcript updates very rapidly
-    // or a condition to only update if user isn't actively typing.
-  }, [transcript, listening]); // Watch transcript and listening state
+    
+  }, [transcript, listening]); 
 
+  useEffect(() => {
+    if (supported && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1]; 
+      if (lastMessage.sender === 'ai' && lastMessage.id !== lastSpokenMessageId.current) {
+        if (speaking) {
+            cancel();
+          }
+        speak(lastMessage.text);
+          lastSpokenMessageId.current = lastMessage.id;
+      }
+    }
+  }, [messages, supported, speaking, speak]); 
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 items-center justify-center">
@@ -69,6 +87,7 @@ export default function ChatPage() {
                 }`}
               >
                 {msg.text}
+                
               </div>
             </div>
           ))}
@@ -116,7 +135,7 @@ export default function ChatPage() {
             Send
           </button>
           <button
-            type="button" // Use type="button" to prevent form submission
+            type="button" 
             onClick={resetChat}
             className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
           >
