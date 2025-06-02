@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import avatar from "@/assets/images/avatar.jpg";
+import Chat from './Chat';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -90,6 +91,7 @@ export default function MainHero() {
 
     // Animate right section to left
     timeline.to(rightSectionRef.current, {
+      
       x: '-100%',
       duration: 0.8,
       ease: 'power2.inOut',
@@ -114,12 +116,12 @@ export default function MainHero() {
   return (
     <div 
       ref={containerRef}
-      className="min-h-screen bg-gray-900 text-white p-8 md:p-16 overflow-hidden relative z-50"
+      className="min-h-screen  text-white p-1  overflow-hidden relative z-50"
       role="region"
       aria-label="Main hero section"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 min-h-[600px] relative">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[600px] relative">
           {/* Left Section */}
           <div
             ref={leftSectionRef}
@@ -127,7 +129,7 @@ export default function MainHero() {
           >
             <h1
               ref={headingRef}
-              className={`${montserrat.className} text-4xl md:text-5xl lg:text-6xl font-bold mb-8`}
+              className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8`}
               aria-label="Welcome message"
             >
               Hi, I'm Here to help you. Talk to me.
@@ -170,26 +172,21 @@ export default function MainHero() {
           {/* New Content Section */}
           <div
             ref={contentSectionRef}
-            className={`absolute top-0 right-0 w-1/2 h-full bg-black-900 rounded-2xl p-8 md:p-12 transform translate-x-full ${
+            className={`absolute top-0 right-0 w-1/2 h-full  rounded-2xl p-8 transform translate-x-full ${
               isTransitioned ? 'block' : 'hidden'
             }`}
             role="region"
             aria-label="Chat section"
-          >
-            <div className="w-full h-full bg-black-900 rounded-xl border-2 border-gray-700 shadow-lg p-6">
+          > <Chat/>
+            {/* <div className="w-full h-full bg-black-900 rounded-xl border-2 border-gray-700 shadow-lg ">
               <div className="h-full flex flex-col">
-                <h2 className={`${montserrat.className} text-2xl md:text-3xl font-bold mb-4`}>
+                <h2 className={` text-2xl md:text-3xl font-bold mb-4`}>
                   Let's Chat
                 </h2>
-                <div className="flex-1 bg-gray-900 rounded-lg p-4">
-                  <div className="h-full flex items-center justify-center text-gray-400">
-                    <div className='w-full h-full'>
-                      {/* Chat component will be rendered here */}
-                    </div>
-                  </div>
-                </div>
+                
+
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
