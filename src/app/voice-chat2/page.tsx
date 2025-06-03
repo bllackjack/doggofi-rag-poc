@@ -1,7 +1,7 @@
 "use client";
 import useSpeechToText from "@/hooks/useSpeechToText";
 import { useChatHandler } from "@/hooks/useChatHandler";
-import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { useSpeechSynthesis } from "@/hooks/useTextToSpeech";
 import { useEffect, useRef, useState } from "react";
 
 

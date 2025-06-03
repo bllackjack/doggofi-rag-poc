@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 // Replace with your actual Langflow Flow ID
 const LANGFLOW_CHAT_FLOW_ID =process.env.NEXT_PUBLIC_LANGFLOW_CHAT_ID;
  // <--- IMPORTANT: REPLACE THIS!
@@ -46,25 +47,21 @@ export const useChatbot = (): UseChatbotResult => {
         try {
             const apiEndpoint = '/lang-chat/api/voicechat'; // Your Next.js API route
 
-            const response = await fetch(apiEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+            const response = await axios.post(apiEndpoint, {
                     message: text,
                     flowId: LANGFLOW_CHAT_FLOW_ID,
-                    sessionId: sessionId, // Pass the session ID
-                }),
+                    sessionId: sessionId, // Pass the session Id
+            },{
+                headers:{
+                    'Content-Type':'application/json',
+                }
             });
-
-            if (!response.ok) {
-                // Attempt to parse error message from the server
-                const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+                   
+            if (response.status !== 200) {
+                throw new Error(response.data?.message || `HTTP error! Status: ${response.status}`);
             }
 
-            const data: ChatResponse = await response.json();
+            const data: ChatResponse = response.data;
             const aiMessage: ChatMessage = {
                 text: data.output || 'No response from AI.',
                 sender: 'ai',

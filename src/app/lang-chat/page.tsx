@@ -2,7 +2,7 @@
 
 import React, { useState, FormEvent, useEffect, useRef } from 'react';
 import { useChatbot } from '@/hooks/useChatbot'
-import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
+import { useSpeechSynthesis } from '@/hooks/useTextToSpeech';
 import useSpeechToText from '@/hooks/useSpeechToText';
 
 export default function ChatPage() {
