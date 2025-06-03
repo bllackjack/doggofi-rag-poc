@@ -1,9 +1,9 @@
 'use client';
 
 import { Suspense } from 'react';
-import Chat from '@/components/Chat';
 import Hero from '@/components/Hero';
 import MainHero from '@/components/MainHero';
+import About from '@components/About';
 import Footer from '@/components/Footer';
 import SmoothScrollWrapper from '@/components/SmoothScrollWrapper';
 import { Montserrat } from 'next/font/google';
@@ -35,6 +35,8 @@ export default function Home() {
           <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
             <Hero />
             <MainHero />
+            <About/>
+          
             <Footer />
           </Suspense>
         </div>

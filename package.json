@@ -14,6 +14,7 @@
     "@studio-freight/react-lenis": "^0.0.47",
     "ai": "^4.3.16",
     "gsap": "^3.13.0",
+    "lucide-react": "^0.511.0",
     "next": "15.3.2",
     "openai": "^4.102.0",
     "react": "^19.0.0",
