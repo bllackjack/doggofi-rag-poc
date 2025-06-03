@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis';
+import { useSpeechSynthesis } from '../hooks/useTextToSpeech';
 
 export default function TTSPlayer() {
   const [text, setText] = useState('Hello, this is a test of the simplified browser Text-to-Speech.');
