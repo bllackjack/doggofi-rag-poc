@@ -6,7 +6,7 @@ export default function Footer() {
     
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between px-4">
         
-        <div className="text-lg font-semibold mb-2 md:mb-0">
+        <div className="text-lg  mb-2 md:mb-0">
           &copy; {new Date().getFullYear()} HimitCo. All rights reserved.
         </div>
         <div className="flex space-x-4 text-gray-400 text-sm">

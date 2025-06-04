@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, FormEvent, useEffect, useRef } from 'react';
-import { useChatbot } from '@/hooks/useChatbot'
+import { useChatbot } from '@/hooks/useChatbot';
 import { useSpeechSynthesis } from '@/hooks/useTextToSpeech';
 import useSpeechToText from '@/hooks/useSpeechToText';
+import { AiOutlineAudioMuted ,AiOutlineAudio ,AiOutlineRedo ,AiOutlineSend  } from "react-icons/ai";
 
 export default function ChatPage() {
 
@@ -68,16 +69,16 @@ export default function ChatPage() {
     }, [messages, supported, speaking, speak]);
 
     return (
-        <div className="flex flex-col h-screen bg-gray-100 items-center justify-center">
-            <div className="flex flex-col w-full max-w-2xl bg-white shadow-lg rounded-lg h-[90vh]">
-                <div className="p-4 border-b border-gray-200 text-center text-xl font-semibold text-gray-700">
-                    Langflow AI Chat
+        <div className="flex flex-col h-screen bg-gray-100 rounded-lg items-center justify-center">
+            <div className="flex flex-col w-full max-w-2xl bg-white shadow-lg rounded-lg h-full">
+                <div className="p-4 border-b border-gray-900 text-center text-xl  text-gray-700">
+                    Let's Chat
                 </div>
 
                 <div className="flex-1 p-4 overflow-y-auto space-y-4">
                     {messages.length === 0 && !isLoading && !error && (
                         <div className="text-center text-gray-500 mt-10">
-                            Start a conversation with your Langflow AI!
+                            Start a conversation with me!
                         </div>
                     )}
                     {messages.map((msg) => (
@@ -87,7 +88,7 @@ export default function ChatPage() {
                         >
                             <div
                                 className={`max-w-xs px-4 py-2 rounded-lg ${msg.sender === 'user'
-                                    ? 'bg-blue-500 text-white'
+                                    ? 'bg-black text-white'
                                     : 'bg-gray-300 text-gray-800'
                                     }`}
                             >
@@ -111,7 +112,7 @@ export default function ChatPage() {
                     <div ref={messagesEndRef} /> {/* For auto-scrolling */}
                 </div>
 
-                <form onSubmit={handleFormSubmit} className="p-4 border-t border-gray-200 flex space-x-2">
+                <form onSubmit={handleFormSubmit} className="p-4 border-t border-gray-200 flex juctify-center   space-x-2">
                     <input
                         type="text"
                         value={input || transcript}
@@ -121,32 +122,33 @@ export default function ChatPage() {
                             }
                         }}
                         placeholder="Type your message..."
-                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 p-2 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black-500"
                         disabled={isLoading}
                     />
+                    
                     <button
                         type="button"
                         onClick={toggleListening}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                        className="px-4 py-2  text-black rounded-lg hover:bg-black hover:text-white disabled:opacity-50"
                         disabled={isLoading}
 
                     >
 
-                        {listening ? "Stop Mic" : "Mic"}
+                        {listening ?<AiOutlineAudio/> : <AiOutlineAudioMuted/> }
                     </button>
                     <button
                         type="submit"
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                        className="px-4 py-2  text-black rounded-lg hover:bg-black hover:text-white disabled:opacity-50"
                         disabled={isLoading}
                     >
-                        Send
+                        <AiOutlineSend/>
                     </button>
                     <button
                         type="button"
                         onClick={resetChat}
-                        className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                        className="px-4 py-2  text-black rounded-lg hover:bg-black hover:text-white disabled:opacity-50"
                     >
-                        Reset
+                        <AiOutlineRedo />
                     </button>
                 </form>
             </div>
